@@ -778,21 +778,21 @@
         const data = res.data;
 
         if (data.success) {
-          // Salva sessão
+          // Salva sessão unificada
           const sessionData = {
             paymentId: data.paymentId,
-            billingType: data.billingType || (currentTab === 'card' ? 'CREDIT_CARD' : 'PIX'), // Fallback
+            billingType: body.billingType,
             value: 5.00,
             name: body.name,
             email: body.email,
-            installments: 1
           };
 
-          if (currentTab === 'pix' && data.qrCode) {
-            sessionData.qrCode = data.qrCode;
-            sessionData.pixPayload = data.pixPayload;
-            sessionData.expirationDate = data.expirationDate;
-            sessionStorage.setItem('pix_data', JSON.stringify(sessionData));
+          if (body.billingType === 'PIX') {
+            // Adiciona dados específicos do Pix se disponíveis
+            if (data.qrCode) sessionData.qrCode = data.qrCode;
+            if (data.pixPayload) sessionData.pixPayload = data.pixPayload;
+
+            sessionStorage.setItem('payment_data', JSON.stringify(sessionData));
             window.location.href = '/pix.html';
           } else {
             sessionStorage.setItem('payment_data', JSON.stringify(sessionData));
