@@ -24,7 +24,7 @@ app.use(cors({
 // Rate limit — protege contra spam de requisições
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 30,                   // máximo 30 requisições por IP
+  max: 300,                   // máximo 300 requisições por IP (necessário para polling)
   message: { error: 'Muitas tentativas. Tente novamente em alguns minutos.' },
 });
 app.use('/api/', limiter);

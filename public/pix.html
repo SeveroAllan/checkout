@@ -226,7 +226,7 @@
                 <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor"
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2-2v1" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 Copiar código Pix
@@ -272,38 +272,34 @@
         async function initPix() {
             const paymentId = paymentData.paymentId;
             if (!paymentId) {
-                alert('Pagamento não encontrado. Inicie novamente.');
-                window.location.href = '/checkout.html';
+                // Se não tiver ID, mostra erro mas NÃO redireciona agressivamente.
+                document.getElementById('pixCode').value = 'Erro: Sessão inválida. Volte ao início.';
+                document.getElementById('loader').style.display = 'none';
                 return;
             }
 
             try {
-                // Busca dados atualizados do pagamento
-                const { data } = await axios.get(`/api/payments/${paymentId}`);
+                // Busca status
+                const statusRes = await axios.get(`/api/payments/${paymentId}/status`);
 
-                // Verifica se tem payload Pix
-                const pixPayload = data.bankSlipUrl || data.invoiceUrl; // Asaas retorna invoiceUrl para Pix as vezes, mas o ideal é o payload copia e cola
-                // Nota: O endpoint do Asaas retorna 'pixQrCodeId' ou similar. 
-                // Vamos tentar pegar o QR Code e Payload de outra rota se necessário.
+                if (statusRes.data.status === 'RECEIVED' || statusRes.data.status === 'CONFIRMED') {
+                    window.location.href = '/obrigado.html';
+                    return;
+                }
 
-                // Na nossa implementação simplificada, vamos pegar o QR Code Image e Payload
+                // Busca QRCode
                 const qrResponse = await axios.get(`/api/payments/${paymentId}/pixQrCode`);
-
                 const { encodedImage, payload } = qrResponse.data;
 
-                // Renderiza
                 document.getElementById('loader').style.display = 'none';
 
                 if (encodedImage) {
-                    // Opção A: Imagem Base64
                     const img = new Image();
                     img.src = 'data:image/png;base64,' + encodedImage;
                     img.id = 'qrcode-img';
-                    // Substitui canvas
                     const canvas = document.getElementById('qrcode-canvas');
-                    canvas.parentNode.replaceChild(img, canvas);
-                } else {
-                    // Opção B: Gera via JS se vier só payload
+                    if (canvas && canvas.parentNode) canvas.parentNode.replaceChild(img, canvas);
+                } else if (payload) {
                     const qr = new QRious({
                         element: document.getElementById('qrcode-canvas'),
                         value: payload,
@@ -311,15 +307,23 @@
                     });
                 }
 
-                document.getElementById('pixCode').value = payload;
+                if (payload) document.getElementById('pixCode').value = payload;
 
-                // Inicia Polling de Status
                 startPolling(paymentId);
 
             } catch (err) {
-                console.error(err);
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('pixCode').value = 'Erro ao carregar Pix.';
+                console.error("Erro no Pix:", err);
+                // Lógica de retry para Cold Start ou Rede
+                if (!window.retryCount) window.retryCount = 0;
+
+                if (window.retryCount < 5) {
+                    window.retryCount++;
+                    document.getElementById('pixCode').value = 'Carregando...';
+                    setTimeout(initPix, 3000); // Tenta de novo depois de 3s
+                } else {
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('pixCode').value = 'Erro ao conectar. Tente recarregar.';
+                }
             }
         }
 
@@ -338,7 +342,6 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        // Polling: Verifica a cada 3s se pagou
         function startPolling(paymentId) {
             setInterval(async () => {
                 try {
@@ -346,7 +349,9 @@
                     if (data.status === 'RECEIVED' || data.status === 'CONFIRMED') {
                         window.location.href = '/obrigado.html';
                     }
-                } catch (e) { console.error('Polling error', e); }
+                } catch (e) {
+                    // Silent error on polling
+                }
             }, 3000);
         }
 
