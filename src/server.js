@@ -30,8 +30,15 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // ─── Servir o frontend estático ───────────────────────────────────────────────
-// Coloque o checkout.html dentro da pasta /public
-app.use(express.static(path.join(__dirname, '../public')));
+const compression = require('compression');
+
+app.use(compression()); // Otimiza tamanho dos arquivos (GZIP)
+
+// Servir estáticos com Cache (1 dia)
+app.use(express.static(path.join(__dirname, '../public'), {
+  maxAge: '1d', // Cache browser por 1 dia
+  etag: false
+}));
 
 // ─── Rotas da API ─────────────────────────────────────────────────────────────
 
