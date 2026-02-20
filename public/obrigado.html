@@ -553,7 +553,7 @@
             // ── Meta Pixel — Purchase (client-side, deduplica com CAPI via event_id) ──
             if (typeof fbq === 'function' && paymentId) {
                 fbq('track', 'Purchase', {
-                    value: value || 0.01,
+                    value: value || 5.00,
                     currency: 'BRL',
                     content_ids: ['codigo-passional'],
                     content_type: 'product',
