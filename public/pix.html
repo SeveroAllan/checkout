@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pix — Aguardando pagamento</title>
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            }; if (!f._fbq) f._fbq = n;
+            n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
+        }(window,
+            document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '27522785837335197');
+        fbq('track', 'PageView');
+    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f5f7;
+            --white: #ffffff;
+            --primary: #1a56db;
+            --primary-light: #e8f0fd;
+            --pix: #32bcad;
+            --pix-dark: #28a89a;
+            --pix-light: #e6f7f5;
+            --success: #0e9f6e;
+            --success-light: #d1fae5;
+            --text: #111928;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --input-bg: #f9fafb;
+            --red: #e02424;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, .08);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, .10);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        /* TOP BAR */
+        .topbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-secure {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Sora', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .topbar-ssl {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* LAYOUT */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 28px 16px 60px;
+        }
+
+        /* HEADER */
+        .page-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .pix-icon-wrap {
+            width: 72px;
+            height: 72px;
+            background: var(--pix-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            border: 2px solid var(--pix);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(50, 188, 173, .4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 12px rgba(50, 188, 173, 0);
+            }
+        }
+
+        .page-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* VALUE BADGE */
+        .value-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--pix-light);
+            border: 1.5px solid var(--pix);
+            border-radius: 30px;
+            padding: 8px 20px;
+            margin: 16px 0;
+            font-family: 'Sora', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--pix-dark);
+        }
+
+        /* CARD */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        /* QR CODE */
+        .qr-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .qr-img-container {
+            width: 220px;
+            height: 220px;
+            border-radius: var(--radius-sm);
+            border: 3px solid var(--pix-light);
+            padding: 8px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-img-container img {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .qr-loading {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .spinner-pix {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--pix-light);
+            border-top-color: var(--pix);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* COPY BUTTON */
+        .copy-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--pix);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Sora', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background .2s, transform .1s;
+        }
+
+        .copy-btn:hover {
+            background: var(--pix-dark);
+        }
+
+        .copy-btn:active {
+            transform: scale(.98);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            pointer-events: none;
+        }
+
+        /* CODE PREVIEW */
+        .code-preview {
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: monospace;
+            word-break: break-all;
+            line-height: 1.5;
+            max-height: 52px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .code-preview::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 40px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, var(--input-bg));
+        }
+
+        /* TIMER */
+        .timer-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: var(--input-bg);
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            margin-bottom: 12px;
+        }
+
+        .timer-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .timer-value {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--pix);
+            letter-spacing: .04em;
+            font-variant-numeric: tabular-nums;
+            transition: color .3s;
+        }
+
+        .timer-value.urgent {
+            color: var(--red);
+        }
+
+        /* STATUS */
+        .status-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            background: var(--input-bg);
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--pix);
+            flex-shrink: 0;
+            animation: blink 1.4s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .3;
+            }
+        }
+
+        .status-dot.confirmed {
+            background: var(--success);
+            animation: none;
+        }
+
+        .status-dot.expired {
+            background: var(--red);
+            animation: none;
+        }
+
+        .status-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            flex: 1;
+        }
+
+        .status-badge {
+            font-family: 'Sora', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: .03em;
+        }
+
+        .status-badge.pending {
+            background: var(--pix-light);
+            color: var(--pix-dark);
+        }
+
+        .status-badge.confirmed {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .status-badge.expired {
+            background: #fee2e2;
+            color: var(--red);
+        }
+
+        /* STEPS */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: var(--pix-light);
+            color: var(--pix-dark);
+            border-radius: 50%;
+            font-family: 'Sora', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .step-text {
+            font-size: 13.5px;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+
+        .step-text strong {
+            color: var(--text);
+        }
+
+        /* CONFIRMED OVERLAY */
+        .confirmed-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .confirmed-overlay.show {
+            display: flex;
+        }
+
+        .confirmed-modal {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 36px 28px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+            animation: popIn .4s cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(.85);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .check-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--success-light);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: popIn .5s cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        .confirmed-modal h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .confirmed-modal p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 480px) {
+            .qr-img-container {
+                width: 180px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-secure">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+                <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2Z" fill="#0e9f6e" />
+                <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            COMPRA 100% SEGURA
+        </div>
+        <div class="topbar-ssl">
+            <svg width="12" height="14" fill="none" viewBox="0 0 12 14">
+                <rect x="1" y="6" width="10" height="7" rx="1.5" stroke="#6b7280" stroke-width="1.3" />
+                <path d="M3.5 6V4a2.5 2.5 0 015 0v2" stroke="#6b7280" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            SSL
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="page-header">
+            <div class="pix-icon-wrap">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                    <path d="M6.5 6.5l5.5 5.5-5.5 5.5M17.5 6.5L12 12l5.5 5.5" stroke="#32bcad" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="page-title">Pague com Pix</div>
+            <div class="page-subtitle">Escaneie o QR Code ou copie o código e pague pelo app do seu banco.</div>
+            <div class="value-badge">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="#32bcad" stroke-width="1.8" />
+                    <path d="M12 6v2m0 8v2M9 12h6" stroke="#32bcad" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+                R$ <span id="valueDisplay">487,00</span>
+            </div>
+        </div>
+
+        <!-- TIMER + STATUS -->
+        <div class="timer-section">
+            <div class="timer-label">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="#6b7280" stroke-width="1.6" />
+                    <path d="M12 6v6l4 2" stroke="#6b7280" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+                Expira em:
+            </div>
+            <div class="timer-value" id="timerDisplay">30:00</div>
+        </div>
+
+        <div class="status-row">
+            <div class="status-dot" id="statusDot"></div>
+            <div class="status-text" id="statusText">Aguardando pagamento…</div>
+            <div class="status-badge pending" id="statusBadge">PENDENTE</div>
+        </div>
+
+        <!-- QR CODE -->
+        <div class="card" style="margin-top: 12px;">
+            <div class="card-title">QR Code Pix</div>
+            <div class="qr-wrap">
+                <div class="qr-img-container" id="qrContainer">
+                    <div class="qr-loading">
+                        <div class="spinner-pix"></div>
+                        Carregando QR Code…
+                    </div>
+                </div>
+
+                <div class="code-preview" id="codePreview">Carregando código…</div>
+
+                <button class="copy-btn" id="copyBtn" onclick="copyPixCode()">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                        <rect x="9" y="9" width="13" height="13" rx="2" stroke="white" stroke-width="1.8" />
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="white"
+                            stroke-width="1.8" />
+                    </svg>
+                    <span id="copyBtnText">Copiar código Pix</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEPS -->
+        <div class="card">
+            <div class="card-title">Como pagar</div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">Abra o <strong>app do seu banco</strong> ou carteira digital.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">Escolha <strong>pagar com Pix</strong> e escaneie o QR Code ou cole o código
+                        copiado.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">Confirme o pagamento de <strong>R$ <span
+                                id="valueSteps">487,00</span></strong>. O acesso será liberado em instantes!</div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /container -->
+
+    <!-- OVERLAY DE CONFIRMAÇÃO -->
+    <div class="confirmed-overlay" id="confirmedOverlay">
+        <div class="confirmed-modal">
+            <div class="check-circle">
+                <svg width="40" height="40" fill="none" viewBox="0 0 24 24">
+                    <path d="M5 13l4 4L19 7" stroke="#0e9f6e" stroke-width="2.8" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+            <h2>Pix confirmado! 🎉</h2>
+            <p>Seu pagamento foi recebido com sucesso. Redirecionando para sua área de acesso…</p>
+            <div class="spinner-pix" style="margin: 0 auto;"></div>
+        </div>
+    </div>
+
+    <script>
+        // ── Dados do sessionStorage ──────────────────────────────────────
+        const raw = sessionStorage.getItem('pix_data');
+
+        if (!raw) {
+            // Sem dados → volta para o checkout
+            window.location.href = '/checkout.html';
+        }
+
+        const pixData = JSON.parse(raw);
+        const { paymentId, qrCode, pixPayload, expirationDate, value, name } = pixData;
+
+        // ── Valor ────────────────────────────────────────────────────────
+        const fmtValue = value ? value.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '487,00';
+        document.getElementById('valueDisplay').textContent = fmtValue;
+        document.getElementById('valueSteps').textContent = fmtValue;
+
+        // ── QR Code ──────────────────────────────────────────────────────
+        if (qrCode) {
+            document.getElementById('qrContainer').innerHTML =
+                `<img src="data:image/png;base64,${qrCode}" alt="QR Code Pix" style="width:100%;height:100%;border-radius:4px;">`;
+        }
+
+        // ── Código copia-e-cola ──────────────────────────────────────────
+        if (pixPayload) {
+            document.getElementById('codePreview').textContent = pixPayload;
+        }
+
+        // ── Copiar código ────────────────────────────────────────────────
+        function copyPixCode() {
+            const text = pixPayload || '';
+            if (!text) return;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const span = document.getElementById('copyBtnText');
+                btn.classList.add('copied');
+                span.textContent = '✓ Código copiado!';
+
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    span.textContent = 'Copiar código Pix';
+                }, 3000);
+            });
+        }
+
+        // ── Cronômetro (30 min) ──────────────────────────────────────────
+        const PIX_DURATION_SECONDS = 30 * 60;
+        let secondsLeft = PIX_DURATION_SECONDS;
+
+        // Se a API retornou expirationDate, calcula o tempo restante real
+        if (expirationDate) {
+            const diff = Math.floor((new Date(expirationDate) - Date.now()) / 1000);
+            if (diff > 0 && diff < PIX_DURATION_SECONDS) secondsLeft = diff;
+        }
+
+        const timerDisplay = document.getElementById('timerDisplay');
+
+        function updateTimer() {
+            if (secondsLeft <= 0) {
+                timerDisplay.textContent = '00:00';
+                timerDisplay.classList.add('urgent');
+                clearInterval(timerInterval);
+                setExpired();
+                return;
+            }
+            const m = Math.floor(secondsLeft / 60);
+            const s = secondsLeft % 60;
+            timerDisplay.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            if (secondsLeft <= 300) timerDisplay.classList.add('urgent');
+            secondsLeft--;
+        }
+
+        updateTimer();
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        // ── Status ───────────────────────────────────────────────────────
+        function setExpired() {
+            document.getElementById('statusDot').className = 'status-dot expired';
+            document.getElementById('statusText').textContent = 'Tempo expirado. Volte ao checkout para tentar novamente.';
+            const badge = document.getElementById('statusBadge');
+            badge.className = 'status-badge expired';
+            badge.textContent = 'EXPIRADO';
+            clearInterval(pollingInterval);
+        }
+
+        function setConfirmed() {
+            clearInterval(pollingInterval);
+            clearInterval(timerInterval);
+
+            // Atualiza status visual
+            document.getElementById('statusDot').className = 'status-dot confirmed';
+            document.getElementById('statusText').textContent = 'Pagamento confirmado!';
+            const badge = document.getElementById('statusBadge');
+            badge.className = 'status-badge confirmed';
+            badge.textContent = 'CONFIRMADO';
+
+            // Salva dados para página de obrigado
+            sessionStorage.setItem('payment_data', JSON.stringify({
+                paymentId,
+                billingType: 'PIX',
+                value,
+                name,
+                email: pixData.email,
+            }));
+
+            // Mostra overlay e redireciona
+            document.getElementById('confirmedOverlay').classList.add('show');
+            setTimeout(() => { window.location.href = '/obrigado.html'; }, 2500);
+        }
+
+        // ── Polling de status (a cada 5s) ────────────────────────────────
+        let pollingAttempts = 0;
+        const MAX_ATTEMPTS = 72; // 6 min de cobertura
+
+        async function checkStatus() {
+            pollingAttempts++;
+            if (pollingAttempts > MAX_ATTEMPTS) {
+                clearInterval(pollingInterval);
+                return;
+            }
+            try {
+                const res = await fetch(`/api/checkout/status/${paymentId}`);
+                const data = await res.json();
+                if (data.status === 'CONFIRMED' || data.status === 'RECEIVED') {
+                    setConfirmed();
+                }
+            } catch (_) { /* ignora erros de rede */ }
+        }
+
+        const pollingInterval = setInterval(checkStatus, 5000);
+    </script>
+</body>
+
+</html>

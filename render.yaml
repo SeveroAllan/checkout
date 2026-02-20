@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: asaas-checkout
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ASAAS_ENV
+        value: production
+      # O Render injeta a porta automaticamente na variável PORT,
+      # mas é bom ter um valor padrão caso falhe.
+      - key: PORT
+        value: 10000
+      # As variáveis com 'sync: false' devem ser preenchidas 
+      # manualmente no painel do Render para segurança.
+      - key: ASAAS_KEY
+        sync: false
+      - key: WEBHOOK_TOKEN
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: META_PIXEL_ID
+        sync: false
+      - key: META_ACCESS_TOKEN
+        sync: false

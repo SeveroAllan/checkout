@@ -1,0 +1,26 @@
+# fly.toml — configuração do Fly.io
+# Documentação: https://fly.io/docs/reference/configuration/
+
+app            = "codigopassional-checkout"
+primary_region = "gru"            # São Paulo — mais próximo do Brasil
+
+[build]
+  # Usa o Dockerfile na raiz do projeto
+
+[env]
+  PORT     = "3000"
+  NODE_ENV = "production"
+  # ⚠️  Não coloque segredos aqui!
+  # Use: fly secrets set ASAAS_KEY=... WEBHOOK_TOKEN=... etc.
+
+[http_service]
+  internal_port       = 3000
+  force_https         = true     # Redireciona HTTP → HTTPS automaticamente
+  auto_stop_machines  = false    # NUNCA parar a máquina (crítico para webhook)
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  memory   = "256mb"
+  cpu_kind = "shared"
+  cpus     = 1
