@@ -1,14 +1,14 @@
 require('dotenv').config();
 
-const express    = require('express');
-const cors       = require('cors');
-const rateLimit  = require('express-rate-limit');
-const path       = require('path');
+const express = require('express');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const path = require('path');
 
 const checkoutRouter = require('./routes/checkout');
-const webhookRouter  = require('./routes/webhook');
+const webhookRouter = require('./routes/webhook');
 
-const app  = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ─── Middlewares ──────────────────────────────────────────────────────────────
@@ -37,6 +37,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.use('/api/checkout', checkoutRouter);
 app.use('/webhook/asaas', webhookRouter);
+app.use('/api/payments', require('./routes/payments')); // Nova rota de consulta
 
 // Health check
 app.get('/api/health', (req, res) => {
