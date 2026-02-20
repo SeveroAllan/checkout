@@ -43,17 +43,30 @@ router.post('/', async (req, res) => {
     if (existing.data?.data?.length > 0) {
       customerId = existing.data.data[0].id;
       console.log(`👤 Cliente existente encontrado: ${customerId}`);
+    } else {
+      // Cliente não encontrado, criar novo
       const customerName = name || (card ? card.holderName : email.split('@')[0]);
 
-      const newCustomer = await asaas.post('/customers', {
-        name: customerName,
-        email,
-        cpfCnpj: cpf.replace(/\D/g, ''),
-        phone: phone.replace(/\D/g, ''),
-        notificationDisabled: false,
-      });
-      customerId = newCustomer.data.id;
-      console.log(`✅ Novo cliente criado: ${customerId}`);
+      try {
+        const newCustomer = await asaas.post('/customers', {
+          name: customerName,
+          email,
+          cpfCnpj: cpf.replace(/\D/g, ''),
+          phone: phone.replace(/\D/g, ''),
+          notificationDisabled: false,
+        });
+        customerId = newCustomer.data.id;
+        console.log(`✅ Novo cliente criado: ${customerId}`);
+      } catch (err) {
+        console.error('Erro ao criar cliente:', err.response?.data || err.message);
+        // Tenta recuperar se falhar por duplicação
+        if (err.response?.data?.errors?.[0]?.code === 'J_001') {
+          // Tenta buscar de novo caso tenha dado erro de duplicidade
+          const retry = await asaas.get('/customers', { params: { email } });
+          customerId = retry.data?.data?.[0]?.id;
+        }
+        if (!customerId) throw new Error('Falha ao criar/identificar cliente.');
+      }
     }
 
     // ── PASSO 2: Criar cobrança ──────────────────────────────────────────────
