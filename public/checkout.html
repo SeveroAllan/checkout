@@ -43,9 +43,11 @@
       --text-main: #111827;
       --text-muted: #6b7280;
       --border-color: #e5e7eb;
-      --primary-color: #dc2626;
-      /* Vermelho do mockup */
-      --primary-hover: #b91c1c;
+      --primary-color: #16a34a;
+      /* Verde sucesso */
+      --primary-hover: #15803d;
+      --primary-light: #f0fdf4;
+      /* Fundo verde claro */
       --radius: 8px;
       --font-family: 'Inter', sans-serif;
     }
@@ -138,6 +140,13 @@
       gap: 12px;
     }
 
+    @media (max-width: 480px) {
+      .form-row {
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+
     .form-col {
       flex: 1;
     }
@@ -207,7 +216,7 @@
       flex: 1;
       border: 1px solid var(--border-color);
       background: #fff;
-      padding: 10px;
+      padding: 12px;
       border-radius: 6px;
       font-size: 13px;
       font-weight: 500;
@@ -216,8 +225,10 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 4px;
+      gap: 6px;
       transition: all 0.2s;
+      position: relative;
+      /* Para posicionar o check */
     }
 
     .tab-btn:hover {
@@ -225,10 +236,37 @@
     }
 
     .tab-btn.active {
-      border-color: var(--text-main);
-      background: #fff;
-      box-shadow: 0 0 0 1px var(--text-main);
-      /* Borda dupla simulada */
+      border: 1px solid var(--primary-color);
+      /* Borda fina normal */
+      background: var(--primary-light);
+      color: var(--primary-color);
+      box-shadow: none;
+      /* Remove borda extra */
+    }
+
+    /* Check redondo quando ativo */
+    .tab-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 18px;
+      height: 18px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tab-btn.active .tab-check {
+      display: flex;
+    }
+
+    .tab-check svg {
+      width: 12px;
+      height: 12px;
+      stroke: white;
+      stroke-width: 3;
     }
 
     /* Ícones SVG simples para as tabs */
@@ -339,6 +377,97 @@
     input.invalid {
       border-color: #ef4444;
     }
+
+    /* FOMO Toast V2 (Correção Cache + Mobile) */
+    .fomo-toast-v2 {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      /* Topo Direita Desktop */
+      background: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 99999;
+      transform: translateX(120%);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-left: 4px solid var(--primary-color);
+      width: auto;
+      max-width: 320px;
+      font-family: var(--font-family);
+    }
+
+    .fomo-toast-v2.visible {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 480px) {
+      .fomo-toast-v2 {
+        top: 10px;
+        right: auto;
+        left: 50%;
+        transform: translate(-50%, -150%);
+        /* Começa acima da tela */
+        width: 90%;
+        max-width: 340px;
+        /* Limite seguro mobile */
+        border-radius: 12px;
+      }
+
+      .fomo-toast-v2.visible {
+        transform: translate(-50%, 0);
+        /* Desce para a tela */
+      }
+    }
+
+    .fomo-icon {
+      background: var(--primary-light);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-color);
+      flex-shrink: 0;
+    }
+
+    .fomo-content {
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text-main);
+    }
+
+    .fomo-title {
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .fomo-time {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .fomo-spots {
+      color: #ef4444;
+      /* Vermelho para urgência nas vagas */
+      font-weight: 700;
+    }
+
+    @media (max-width: 480px) {
+      .fomo-toast {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        max-width: none;
+      }
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/imask"></script>
 </head>
@@ -365,8 +494,8 @@
 
     <!-- Produto -->
     <div class="product-header">
-      <!-- Imagem do produto: supondo que você coloque na pasta public -->
-      <img src="/image_mockup_produto.png" alt="Código Passional" class="product-img"
+      <!-- Imagem do produto atualizada -->
+      <img src="/produto.png" alt="Código Passional" class="product-img"
         onerror="this.src='https://placehold.co/70x70?text=Produto'">
       <div class="product-info">
         <h1>Código Passional</h1>
@@ -410,6 +539,9 @@
       <label style="margin-top:20px;">Forma de pagamento</label>
       <div class="payment-tabs">
         <div class="tab-btn active" onclick="setTab('card')">
+          <div class="tab-check"><svg viewBox="0 0 24 24">
+              <path d="M20 6L9 17l-5-5" fill="none" />
+            </svg></div>
           <svg class="icon-card" viewBox="0 0 24 24">
             <path
               d="M21 4H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H3V12h18v6zM3 8V6h18v2H3z" />
@@ -417,7 +549,10 @@
           Cartão de crédito
         </div>
         <div class="tab-btn" onclick="setTab('pix')">
-          <img src="/pix-svgrepo-com.svg" width="16" height="16" alt="Pix" style="display:block;">
+          <div class="tab-check"><svg viewBox="0 0 24 24">
+              <path d="M20 6L9 17l-5-5" fill="none" />
+            </svg></div>
+          <img src="/pix.svg" width="16" height="16" alt="Pix" style="display:block;">
           Pix
         </div>
       </div>
@@ -498,8 +633,67 @@
 
   </div> <!-- /container -->
 
+  <!-- Toast Element -->
+  <div id="fomoToast" class="fomo-toast-v2">
+    <div class="fomo-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </div>
+    <div class="fomo-content">
+      <div class="fomo-title">Compra aprovada</div>
+      <div id="fomoMsg">...</div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
+    /* ─── Lógica FOMO (Fake Notifications - Apenas 2 alertas) ─── */
+    const fomoUsers = [
+      'mari***@gmail.com', 'joao***@hotmail.com', 'pedr***@uol.com.br',
+      'luan***@gmail.com', 'carl***@outlook.com', 'anac***@gmail.com'
+    ];
+
+    let spotsLeft = 4; // Começa silenciosamente em 4
+    let alertCount = 0; // Conta quantos alertas já mostramos
+
+    function showFomoNotification() {
+      // Se já mostrou 2 vezes (restam 3, restam 2), para.
+      if (alertCount >= 2) return;
+
+      const toast = document.getElementById('fomoToast');
+      const msgEl = document.getElementById('fomoMsg');
+
+      // Decrementa vaga antes de mostrar
+      spotsLeft--;
+      alertCount++;
+
+      // Escolhe usuário aleatório
+      const user = fomoUsers[Math.floor(Math.random() * fomoUsers.length)];
+
+      // Atualiza mensagem
+      msgEl.innerHTML = `${user} acabou de comprar.<br><span class="fomo-spots">Restam apenas ${spotsLeft} vagas!</span>`;
+
+      // Mostra
+      toast.classList.add('visible');
+
+      // Esconde depois de 4.5s
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 4500);
+
+      // Agenda próxima (se ainda não mostrou 2)
+      if (alertCount < 2) {
+        // Demora um pouco mais para o segundo alerta (15s a 25s)
+        const delay = Math.floor(Math.random() * 10000) + 15000;
+        setTimeout(showFomoNotification, delay);
+      }
+    }
+
+    // Primeiro alerta após 8 segundos (para dar tempo de ler o topo)
+    setTimeout(showFomoNotification, 8000);
+
+    /* ─── Lógica Checkout ─── */
     let currentTab = 'card';
 
     // Máscaras
