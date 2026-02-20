@@ -65,7 +65,10 @@ router.post('/', async (req, res) => {
           const retry = await asaas.get('/customers', { params: { email } });
           customerId = retry.data?.data?.[0]?.id;
         }
-        if (!customerId) throw new Error('Falha ao criar/identificar cliente.');
+        if (!customerId) {
+          const apiMsg = err.response?.data?.errors?.[0]?.description;
+          throw new Error(apiMsg || err.message || 'Falha ao criar/identificar cliente Asaas.');
+        }
       }
     }
 
