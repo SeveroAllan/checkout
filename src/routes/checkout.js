@@ -21,8 +21,8 @@ function extractAsaasError(error) {
 router.post('/', async (req, res) => {
   const { name, email, cpf, phone, billingType, card, installments } = req.body;
 
-  // Validação básica dos campos obrigatórios (Nome removido, será gerado se não vier)
-  if (!email || !cpf || !phone || !billingType) {
+  // Validação básica dos campos obrigatórios
+  if (!name || !email || !cpf || !phone || !billingType) {
     return res.status(400).json({ error: 'Campos obrigatórios faltando.' });
   }
 

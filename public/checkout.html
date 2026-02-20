@@ -512,6 +512,11 @@
         <input type="email" id="email" placeholder="Insira seu e-mail" required>
       </div>
 
+      <div class="form-group" style="margin-top:16px;">
+        <label>Nome completo</label>
+        <input type="text" id="name" placeholder="Insira seu nome completo" required>
+      </div>
+
       <div class="form-row">
         <div class="form-col">
           <label>CPF/CNPJ</label>
@@ -728,16 +733,17 @@
     async function handleSubmit() {
       const btn = document.getElementById('btnSubmit');
 
-      // Validaçoes básicas (Nome removido)
+      // Validaçoes básicas
+      const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const cpf = document.getElementById('cpf').value;
       const phone = document.getElementById('phone').value;
 
-      if (!email || !cpf || !phone) { alert('Preencha seus dados de contato'); return; }
+      if (!name || !email || !cpf || !phone) { alert('Preencha seus dados pessoais'); return; }
 
       // Monta payload
       const body = {
-        email, cpf, phone,
+        name, email, cpf, phone,
         billingType: currentTab === 'card' ? 'CREDIT_CARD' : 'PIX',
         installments: 1
       };
