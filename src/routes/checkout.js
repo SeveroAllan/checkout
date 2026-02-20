@@ -21,8 +21,8 @@ function extractAsaasError(error) {
 router.post('/', async (req, res) => {
   const { name, email, cpf, phone, billingType, card, installments } = req.body;
 
-  // Validação básica dos campos obrigatórios
-  if (!name || !email || !cpf || !phone || !billingType) {
+  // Validação básica dos campos obrigatórios (Nome removido, será gerado se não vier)
+  if (!email || !cpf || !phone || !billingType) {
     return res.status(400).json({ error: 'Campos obrigatórios faltando.' });
   }
 
@@ -43,9 +43,10 @@ router.post('/', async (req, res) => {
     if (existing.data?.data?.length > 0) {
       customerId = existing.data.data[0].id;
       console.log(`👤 Cliente existente encontrado: ${customerId}`);
-    } else {
+      const customerName = name || (card ? card.holderName : email.split('@')[0]);
+
       const newCustomer = await asaas.post('/customers', {
-        name,
+        name: customerName,
         email,
         cpfCnpj: cpf.replace(/\D/g, ''),
         phone: phone.replace(/\D/g, ''),
@@ -61,15 +62,16 @@ router.post('/', async (req, res) => {
     const numInstallments = isCard ? parseInt(installments) || 1 : undefined;
 
     // Valores de exemplo (adapte ao seu produto)
-    const VALUE_CASH    = 487.00; // à vista (Pix)
-    const VALUE_FULL    = 604.44; // total no cartão
+    // Valores de exemplo (adapte ao seu produto)
+    const VALUE_CASH = 0.01; // à vista (Pix)
+    const VALUE_FULL = 0.01; // total no cartão
     const VALUE_INSTALL = parseFloat((VALUE_FULL / numInstallments).toFixed(2));
 
     const paymentPayload = {
       customer: customerId,
       billingType,
       dueDate: today(),
-      description: 'Curso de Inglês Completo — Básico ao Avançado',
+      description: 'Código Passional — Guia completo com técnicas de reconstrução de relacionamento.',
     };
 
     if (isCard) {
@@ -98,19 +100,19 @@ router.post('/', async (req, res) => {
 
       await asaas.post(`/payments/${paymentId}/payWithCreditCard`, {
         creditCard: {
-          holderName:  card.holderName,
-          number:      card.number.replace(/\s/g, ''),
+          holderName: card.holderName,
+          number: card.number.replace(/\s/g, ''),
           expiryMonth,
           expiryYear: `20${expiryYear}`,
-          ccv:         card.cvv,
+          ccv: card.cvv,
         },
         creditCardHolderInfo: {
-          name:          name,
-          cpfCnpj:       cpf.replace(/\D/g, ''),
-          email:         email,
-          phone:         phone.replace(/\D/g, ''),
+          name: name || card.holderName,
+          cpfCnpj: cpf.replace(/\D/g, ''),
+          email: email,
+          phone: phone.replace(/\D/g, ''),
           // Adapte os campos de endereço se necessário
-          postalCode:    card.postalCode || '01310100',
+          postalCode: card.postalCode || '01310100',
           addressNumber: card.addressNumber || '1',
         },
       });
@@ -118,10 +120,10 @@ router.post('/', async (req, res) => {
       console.log(`✅ Cartão processado com sucesso para pagamento ${paymentId}`);
 
       return res.json({
-        success:   true,
+        success: true,
         paymentId,
-        status:    'CONFIRMED',
-        message:   'Pagamento aprovado com sucesso!',
+        status: 'CONFIRMED',
+        message: 'Pagamento aprovado com sucesso!',
       });
     }
 
@@ -134,11 +136,11 @@ router.post('/', async (req, res) => {
       console.log(`✅ QR Code Pix gerado para pagamento ${paymentId}`);
 
       return res.json({
-        success:        true,
+        success: true,
         paymentId,
-        status:         'PENDING',
-        qrCode:         encodedImage,   // base64 da imagem
-        pixPayload:     payload,         // código copia e cola
+        status: 'PENDING',
+        qrCode: encodedImage,   // base64 da imagem
+        pixPayload: payload,         // código copia e cola
         expirationDate,
       });
     }

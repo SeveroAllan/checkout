@@ -406,7 +406,7 @@
             <div class="card-title">Resumo da compra</div>
             <div class="summary-row">
                 <span>Produto</span>
-                <strong>Curso de Inglês Completo</strong>
+                <strong>Código Passional</strong>
             </div>
             <div class="summary-row">
                 <span>Nome</span>
@@ -553,9 +553,9 @@
             // ── Meta Pixel — Purchase (client-side, deduplica com CAPI via event_id) ──
             if (typeof fbq === 'function' && paymentId) {
                 fbq('track', 'Purchase', {
-                    value: value || 487,
+                    value: value || 0.01,
                     currency: 'BRL',
-                    content_ids: ['curso-ingles-completo'],
+                    content_ids: ['codigo-passional'],
                     content_type: 'product',
                     order_id: paymentId,
                 }, { eventID: `${paymentId}_Purchase` });
