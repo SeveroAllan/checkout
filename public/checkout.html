@@ -130,6 +130,36 @@
       line-height: 1.4;
     }
 
+    /* Badges de Vagas */
+    .spots-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .spots-green {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .spots-orange {
+      background: #ffedd5;
+      color: #9a3412;
+      border: 1px solid #fed7aa;
+    }
+
+    .spots-red {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
     /* Formulário */
     .form-section {
       padding: 20px;
@@ -174,6 +204,68 @@
       font-family: inherit;
       outline: none;
       transition: border-color 0.2s;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      padding: 24px 0 10px;
+      border-top: 1px solid var(--border-color);
+      margin-top: 24px;
+    }
+
+    .faq-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid #f3f4f6;
+      padding: 12px 0;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      user-select: none;
+      transition: color 0.2s;
+    }
+
+    .faq-question:hover {
+      color: var(--text-muted);
+    }
+
+    .faq-answer {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .faq-item.active .faq-answer {
+      display: block;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s;
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(180deg);
     }
 
     input:focus,
@@ -503,8 +595,8 @@
         alt="Produto" class="product-img">
       <div class="product-info">
         <h1>Código Passional</h1>
-        <div class="product-price">R$ 17,00</div>
-        <p class="product-desc">Guia completo com técnicas de reconstrução de relacionamento.</p>
+        <div class="product-price">R$ 24,00</div>
+        <div id="spots-counter" class="spots-badge spots-green">4 vagas disponíveis</div>
       </div>
     </div>
 
@@ -584,7 +676,7 @@
           <div class="form-col" style="flex:1.5;">
             <label>Parcelas</label>
             <select id="installments">
-              <option value="1">1x de R$ 17,00</option>
+              <option value="1">1x de R$ 24,00</option>
             </select>
           </div>
         </div>
@@ -607,15 +699,19 @@
       <div class="summary-title">Resumo</div>
       <div class="summary-row">
         <span>Código Passional</span>
-        <span>R$ 17,00</span>
+        <span>R$ 24,00</span>
       </div>
       <div class="summary-row">
         <span>Subtotal</span>
-        <span>R$ 17,00</span>
+        <span>R$ 24,00</span>
+      </div>
+      <div class="summary-row">
+        <span>GARANTIA</span>
+        <span style="color: #16a34a; font-weight: 700;">30 DIAS</span>
       </div>
       <div class="summary-row total">
         <span>Total</span>
-        <span>1x R$ 17,00</span>
+        <span>1x R$ 24,00</span>
       </div>
 
       <button type="button" class="btn-submit" id="btnSubmit" onclick="handleSubmit()">
@@ -637,9 +733,54 @@
         </p>
         <div style="margin-top:8px; font-size:10px; color:#cbd5e1;">COPYRIGHT © 2026 | Todos os direitos reservados
         </div>
-      </div>
-    </div>
+      </div> <!-- /secure-footer -->
 
+      <div class="faq-section">
+        <div class="faq-title">Dúvidas frequentes</div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Como recebo o acesso ao produto?
+            <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </div>
+          <div class="faq-answer">
+            Assim que o pagamento for confirmado, você receberá um e-mail com os dados de acesso à nossa plataforma.
+            Pagamentos via Pix e Cartão são liberados instantaneamente.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            É seguro comprar aqui?
+            <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </div>
+          <div class="faq-answer">
+            Sim! Utilizamos tecnologia de criptografia de ponta a ponta e processamento seguro via Asaas. Seus dados
+            estão 100% protegidos.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Como funciona a garantia de 30 dias?
+            <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </div>
+          <div class="faq-answer">
+            Oferecemos uma garantia incondicional de 30 dias. Se você não estiver satisfeito com o conteúdo, basta
+            solicitar o reembolso total dentro desse período.
+          </div>
+        </div>
+      </div>
+    </div> <!-- /summary-section -->
   </div> <!-- /container -->
 
   <!-- Toast Element -->
@@ -666,6 +807,11 @@
     let spotsLeft = 4; // Começa silenciosamente em 4
     let alertCount = 0; // Conta quantos alertas já mostramos
 
+    function toggleFaq(el) {
+      const item = el.parentElement;
+      item.classList.toggle('active');
+    }
+
     function showFomoNotification() {
       // Se já mostrou 2 vezes (restam 3, restam 2), para.
       if (alertCount >= 2) return;
@@ -682,6 +828,22 @@
 
       // Atualiza mensagem
       msgEl.innerHTML = `${user} acabou de comprar.<br><span class="fomo-spots">Restam apenas ${spotsLeft} vagas!</span>`;
+
+      // Atualiza contador no topo (abaixo do preço)
+      const topCounter = document.getElementById('spots-counter');
+      if (topCounter) {
+        topCounter.textContent = `${spotsLeft} vagas disponíveis`;
+
+        // Remove classes antigas e adiciona a nova conforme a quantidade
+        topCounter.classList.remove('spots-green', 'spots-orange', 'spots-red');
+        if (spotsLeft >= 4) {
+          topCounter.classList.add('spots-green');
+        } else if (spotsLeft === 3) {
+          topCounter.classList.add('spots-orange');
+        } else {
+          topCounter.classList.add('spots-red');
+        }
+      }
 
       // Mostra
       toast.classList.add('visible');
@@ -770,7 +932,7 @@
       // Pixel: InitiateCheckout
       if (typeof fbq === 'function') {
         fbq('track', 'InitiateCheckout', {
-          value: 17.00,
+          value: 24.00,
           currency: 'BRL',
           content_ids: ['codigo-passional'],
           content_type: 'product'
@@ -786,7 +948,7 @@
           const sessionData = {
             paymentId: data.paymentId,
             billingType: body.billingType,
-            value: 17.00,
+            value: 24.00,
             name: body.name,
             email: body.email,
           };

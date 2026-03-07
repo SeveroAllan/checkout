@@ -43,6 +43,16 @@ router.post('/', async (req, res) => {
     if (existing.data?.data?.length > 0) {
       customerId = existing.data.data[0].id;
       console.log(`👤 Cliente existente encontrado: ${customerId}`);
+
+      // Desativa notificações para cliente existente conforme instrução
+      try {
+        await asaas.post(`/customers/${customerId}`, {
+          notificationDisabled: 'true',
+        });
+        console.log(`🔕 Notificações desativadas para cliente existente: ${customerId}`);
+      } catch (err) {
+        console.error(`⚠️ Erro ao desativar notificações para cliente ${customerId}:`, err.response?.data || err.message);
+      }
     } else {
       // Cliente não encontrado, criar novo
       const customerName = name || (card ? card.holderName : email.split('@')[0]);
@@ -53,7 +63,7 @@ router.post('/', async (req, res) => {
           email,
           cpfCnpj: cpf.replace(/\D/g, ''),
           phone: phone.replace(/\D/g, ''),
-          notificationDisabled: false,
+          notificationDisabled: true,
         });
         customerId = newCustomer.data.id;
         console.log(`✅ Novo cliente criado: ${customerId}`);
@@ -79,8 +89,8 @@ router.post('/', async (req, res) => {
 
     // Valores de exemplo (adapte ao seu produto)
     // Valores de exemplo (adapte ao seu produto)
-    const VALUE_CASH = 17.00; // à vista (Pix)
-    const VALUE_FULL = 17.00; // total no cartão
+    const VALUE_CASH = 24.00; // à vista (Pix)
+    const VALUE_FULL = 24.00; // total no cartão
     const VALUE_INSTALL = parseFloat((VALUE_FULL / numInstallments).toFixed(2));
 
     const paymentPayload = {
