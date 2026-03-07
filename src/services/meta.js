@@ -49,7 +49,7 @@ async function sendEvent({ eventName, email, phone, value, orderId, currency = '
             custom_data: {
                 value,
                 currency,
-                content_ids: ['curso-ingles-completo'],
+                content_ids: ['codigo-passional'],
                 content_type: 'product',
                 order_id: orderId,
             },

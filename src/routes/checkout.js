@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const asaas = require('../services/asaas');
+const meta = require('../services/meta');
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -114,6 +115,16 @@ router.post('/', async (req, res) => {
     const payment = await asaas.post('/payments', paymentPayload);
     const paymentId = payment.data.id;
     console.log(`💳 Cobrança criada: ${paymentId}`);
+
+    // Envia evento InitiateCheckout para Meta CAPI (Deduplicação com o Pixel)
+    // Não travamos o fluxo se o CAPI falhar
+    meta.sendEvent({
+      eventName: 'InitiateCheckout',
+      email,
+      phone,
+      value: isCard ? VALUE_FULL : VALUE_CASH,
+      orderId: paymentId
+    }).catch(err => console.error('⚠️ Erro ao enviar InitiateCheckout CAPI:', err.message));
 
     // ── PASSO 3a: Processar cartão de crédito ───────────────────────────────
 
