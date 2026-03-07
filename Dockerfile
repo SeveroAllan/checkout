@@ -4,9 +4,9 @@ FROM node:20-alpine
 # Diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia manifesto e instala só dependências de produção
+# Copia manifesto e instala dependências de produção
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install --omit=dev
 
 # Copia o restante do código
 COPY . .
