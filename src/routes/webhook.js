@@ -29,31 +29,51 @@ function validateToken(req, res) {
 
 // ─── Handlers ─────────────────────────────────────────────────────────────────
 
-async function onPaymentConfirmed(payment) {
-  console.log(`✅ Pagamento confirmado!`);
-  console.log(`   ID:      ${payment.id}`);
-  console.log(`   Cliente: ${payment.customer}`);
-  console.log(`   Valor:   R$ ${payment.value}`);
-  console.log(`   Tipo:    ${payment.billingType}`);
+async function onPaymentConfirmed(payment, body) {
+  console.log(`\n✅ [WEBHOOK] Pagamento confirmado!`);
+  console.log(`   ID:        ${payment.id}`);
+  console.log(`   Status:    ${payment.status}`);
+  console.log(`   Valor:     R$ ${payment.value}`);
+  console.log(`   ClienteID: ${payment.customer}`);
 
-  // Busca dados do cliente para enriquecer o evento Meta CAPI
-  try {
-    const { data: customer } = await asaas.get(`/customers/${payment.customer}`);
+  let email = null;
+  let phone = null;
 
-    await meta.sendEvent({
-      eventName: 'Purchase',
-      email: customer.email,
-      phone: customer.mobilePhone || customer.phone,
-      value: payment.value,
-      orderId: payment.id,
-    });
-  } catch (err) {
-    console.error('❌ Erro ao enriquecer evento Meta:', err.message);
+  // 1. Tenta pegar dados do cliente vinculados diretamente ao objeto payment no payload
+  // O Asaas costuma enviar um objeto 'customer' com dados básicos se configurado.
+  if (body.payment && typeof body.payment.customer === 'object') {
+    email = body.payment.customer.email;
+    phone = body.payment.customer.mobilePhone || body.payment.customer.phone;
+    if (email) console.log(`   💡 Cliente (payload): ${email}`);
   }
 
-  // TODO: outras ações de negócio aqui
-  // await sendAccessEmail(payment.customer);
-  // await db.markAsPaid(payment.id);
+  // 2. Busca dados do cliente via API para garantir enriquecimento completo
+  try {
+    if (!email) {
+      console.log(`   🔍 Buscando dados do cliente ${payment.customer} na API Asaas...`);
+      const { data: customer } = await asaas.get(`/customers/${payment.customer}`);
+      email = customer.email;
+      phone = customer.mobilePhone || customer.phone;
+      console.log(`   ✅ Cliente (API): ${email}`);
+    }
+
+    if (email) {
+      await meta.sendEvent({
+        eventName: 'Purchase',
+        email,
+        phone,
+        value: payment.value,
+        orderId: payment.id,
+        testCode: process.env.META_TEST_CODE,
+      });
+    } else {
+      console.warn(`   ⚠️  Não foi possível obter o e-mail do cliente ${payment.customer}. Evento Purchase não disparado.`);
+    }
+  } catch (err) {
+    console.error(`   ❌ Erro ao processar evento Meta para o pagamento ${payment.id}:`, err.response?.data || err.message);
+  }
+
+  // TODO: outras ações de negócio aqui (ex: liberar acesso ao produto)
 }
 
 function onPaymentOverdue(payment) {
@@ -84,7 +104,7 @@ router.post('/', express.json(), async (req, res) => {
 
   try {
     if (CONFIRMED_EVENTS.has(event)) {
-      await onPaymentConfirmed(payment);
+      await onPaymentConfirmed(payment, req.body);
     } else {
       switch (event) {
         case 'PAYMENT_OVERDUE': onPaymentOverdue(payment); break;

@@ -42,6 +42,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use('/api/checkout', checkoutRouter);
 app.use('/webhook/asaas', webhookRouter);
 app.use('/api/payments', require('./routes/payments')); // Nova rota de consulta
+app.use('/api/meta-test', require('./routes/meta-test')); // Rota para testar eventos Meta
 
 // Health check
 app.get('/api/health', (req, res) => {
