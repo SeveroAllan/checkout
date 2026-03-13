@@ -597,7 +597,7 @@
       <img src="/produto.png" alt="Produto" class="product-img">
       <div class="product-info">
         <h1>Código Passional da Reconquista</h1>
-        <div class="product-price">R$ 24,00</div>
+        <div class="product-price">R$ 97,00</div>
         <div id="spots-counter" class="spots-badge spots-green">4 vagas disponíveis</div>
       </div>
     </div>
@@ -678,7 +678,7 @@
           <div class="form-col" style="flex:1.5;">
             <label>Parcelas</label>
             <select id="installments">
-              <option value="1">1x de R$ 24,00</option>
+              <option value="1">1x de R$ 97,00</option>
             </select>
           </div>
         </div>
@@ -701,11 +701,11 @@
       <div class="summary-title">Resumo</div>
       <div class="summary-row">
         <span>Código Passional da Reconquista</span>
-        <span>R$ 24,00</span>
+        <span>R$ 97,00</span>
       </div>
       <div class="summary-row">
         <span>Subtotal</span>
-        <span>R$ 24,00</span>
+        <span>R$ 97,00</span>
       </div>
       <div class="summary-row">
         <span>GARANTIA</span>
@@ -713,7 +713,7 @@
       </div>
       <div class="summary-row total">
         <span>Total</span>
-        <span>1x R$ 24,00</span>
+        <span>1x R$ 97,00</span>
       </div>
 
       <button type="button" class="btn-submit" id="btnSubmit" onclick="handleSubmit()">
@@ -934,7 +934,7 @@
       // Pixel: InitiateCheckout
       if (typeof fbq === 'function') {
         fbq('track', 'InitiateCheckout', {
-          value: 24.00,
+          value: 97.00,
           currency: 'BRL',
           content_ids: ['codigo-passional'],
           content_type: 'product'
@@ -950,7 +950,7 @@
           const sessionData = {
             paymentId: data.paymentId,
             billingType: body.billingType,
-            value: 24.00,
+            value: 97.00,
             name: body.name,
             email: body.email,
           };

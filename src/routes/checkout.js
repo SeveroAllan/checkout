@@ -90,8 +90,8 @@ router.post('/', async (req, res) => {
 
     // Valores de exemplo (adapte ao seu produto)
     // Valores de exemplo (adapte ao seu produto)
-    const VALUE_CASH = 24.00; // à vista (Pix)
-    const VALUE_FULL = 24.00; // total no cartão
+    const VALUE_CASH = 97.00; // à vista (Pix)
+    const VALUE_FULL = 97.00; // total no cartão
     const VALUE_INSTALL = parseFloat((VALUE_FULL / numInstallments).toFixed(2));
 
     const paymentPayload = {

@@ -30,7 +30,7 @@ const testData = {
   eventName: eventName,
   email: 'teste@codigopassional.com',
   phone: '11999999999',
-  value: 24.00,
+  value: 97.00,
   orderId: `test_${Date.now()}`,
   currency: 'BRL',
   testCode: testCode,

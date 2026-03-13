@@ -106,7 +106,7 @@ async function testPurchaseEvent(testCode) {
   const testData = {
     email: 'teste@codigopassional.com',
     phone: '11999999999',
-    value: 24.00,
+    value: 97.00,
     orderId: `test_${Math.floor(Date.now() / 1000)}`,
     currency: 'BRL'
   };

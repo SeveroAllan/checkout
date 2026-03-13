@@ -20,7 +20,7 @@ const payload = {
     payment: {
         id: paymentId,
         customer: 'cus_test_123',
-        value: 24.00,
+        value: 97.00,
         billingType: 'PIX',
         status: 'CONFIRMED'
     }
