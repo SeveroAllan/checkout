@@ -61,7 +61,7 @@ async function sendEvent({ eventName, email, phone, value, orderId, currency = '
     try {
         const res = await axios.post(API_URL, payload, {
             params: { access_token: ACCESS_TOKEN },
-            timeout: 8000,
+            timeout: 30000,
         });
         console.log(`📊 Meta CAPI: ${eventName} | events_received: ${res.data.events_received} | fbc_quality: ${res.data.fbc_quality_score ?? 'n/a'}`);
     } catch (err) {
