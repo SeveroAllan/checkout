@@ -33,7 +33,11 @@
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="preload" href="/produto.png" as="image">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/imask" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
 
   <style>
     /* Reset & Clean Base */
@@ -569,7 +573,6 @@
       }
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/imask"></script>
 </head>
 
 <body>
@@ -594,7 +597,7 @@
 
     <!-- Produto -->
     <div class="product-header">
-      <img src="/produto.png" alt="Produto" class="product-img">
+      <img src="/produto.png" alt="Produto" class="product-img" fetchpriority="high">
       <div class="product-info">
         <h1>Código Passional da Reconquista</h1>
         <div class="product-price">R$ 97,00</div>
@@ -797,9 +800,8 @@
       <div id="fomoMsg">...</div>
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
     /* ─── Lógica FOMO (Fake Notifications - Apenas 2 alertas) ─── */
     const fomoUsers = [
       'mari***@gmail.com', 'joao***@hotmail.com', 'pedr***@uol.com.br',
@@ -978,6 +980,13 @@
         btn.disabled = false;
       }
     }
+    
+    // Tornar funções disponíveis globalmente para o HTML onClick
+    window.toggleFaq = toggleFaq;
+    window.setTab = setTab;
+    window.handleSubmit = handleSubmit;
+
+    }); // Fim DOMContentLoaded
   </script>
 </body>
 

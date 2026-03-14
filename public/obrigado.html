@@ -215,6 +215,7 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
         // recupera dados
         const raw = sessionStorage.getItem('payment_data');
         let val = 97.00; // default
@@ -287,6 +288,7 @@
 
         createParticles();
         draw();
+        });
     </script>
 </body>
 

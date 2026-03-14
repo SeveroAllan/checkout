@@ -234,9 +234,9 @@
     </style>
 
     <!-- Script QR Code (gerar local) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js" defer></script>
     <!-- Axios -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
 </head>
 
 <body>
@@ -293,6 +293,7 @@
     <div id="toast" class="toast">Código copiado!</div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
         // Recupera dados do checkout
         const rawData = sessionStorage.getItem('payment_data');
         let paymentData = {};
@@ -421,6 +422,11 @@
         // Start
         initPix();
         startCountdown();
+
+        // Tornar funções disponíveis globalmente para o HTML onClick
+        window.copyPix = copyPix;
+
+        }); // Fim DOMContentLoaded
     </script>
 </body>
 
